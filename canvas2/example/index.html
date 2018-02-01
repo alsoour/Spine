@@ -17,9 +17,8 @@ var assetManager;
 var skeleton, state, bounds;
 var skeletonRenderer;
 
-var skelName = "skeleton";
-var animName = "idel1";
-var address = "spine/background/"
+var skelName = "spineboy-ess";
+var animName = "walk";
 
 function init () {
 	canvas = document.getElementById("canvas");
@@ -29,17 +28,15 @@ function init () {
 
 	skeletonRenderer = new spine.canvas.SkeletonRenderer(context);
 	// enable debug rendering
-	// skeletonRenderer.debugRendering = true;
+	skeletonRenderer.debugRendering = true;
 	// enable the triangle renderer, supports meshes, but may produce artifacts in some browsers
 	skeletonRenderer.triangleRendering = false;
 
 	assetManager = new spine.canvas.AssetManager();
 
-	assetManager.loadText(address + skelName + ".json");
-	assetManager.loadText(address + skelName.replace("-pro", "").replace("-ess", "") + ".atlas");
-	assetManager.loadTexture(address + skelName.replace("-pro", "").replace("-ess", "") + ".png");
-	assetManager.loadTexture(address + skelName.replace("-pro", "").replace("-ess", "") + "2.png");
-	assetManager.loadTexture(address + skelName.replace("-pro", "").replace("-ess", "") + "3.png");
+	assetManager.loadText("assets/" + skelName + ".json");
+	assetManager.loadText("assets/" + skelName.replace("-pro", "").replace("-ess", "") + ".atlas");
+	assetManager.loadTexture("assets/" + skelName.replace("-pro", "").replace("-ess", "") + ".png");
 
 	requestAnimationFrame(load);
 }
@@ -61,8 +58,8 @@ function loadSkeleton (name, initialAnimation, skin) {
 
 	// Load the texture atlas using name.atlas and name.png from the AssetManager.
 	// The function passed to TextureAtlas is used to resolve relative paths.
-	atlas = new spine.TextureAtlas(assetManager.get(address + name.replace("-pro", "").replace("-ess", "") + ".atlas"), function(path) {
-		return assetManager.get(address + path);
+	atlas = new spine.TextureAtlas(assetManager.get("assets/" + name.replace("-pro", "").replace("-ess", "") + ".atlas"), function(path) {
+		return assetManager.get("assets/" + path);
 	});
 
 	// Create a AtlasAttachmentLoader, which is specific to the WebGL backend.
@@ -72,7 +69,7 @@ function loadSkeleton (name, initialAnimation, skin) {
 	var skeletonJson = new spine.SkeletonJson(atlasLoader);
 
 	// Set the scale to apply during parsing, parse the file, and create a new skeleton.
-	var skeletonData = skeletonJson.readSkeletonData(assetManager.get(address + name + ".json"));
+	var skeletonData = skeletonJson.readSkeletonData(assetManager.get("assets/" + name + ".json"));
 	var skeleton = new spine.Skeleton(skeletonData);
 	skeleton.flipY = true;
 	var bounds = calculateBounds(skeleton);
@@ -128,7 +125,14 @@ function render () {
 	skeleton.updateWorldTransform();
 	skeletonRenderer.draw(skeleton);
 
-	
+	context.strokeStyle = "green";
+	context.beginPath();
+	context.moveTo(-1000, 0);
+	context.lineTo(1000, 0);
+	context.moveTo(0, -1000);
+	context.lineTo(0, 1000);
+	context.stroke();
+
 	requestAnimationFrame(render);
 }
 
